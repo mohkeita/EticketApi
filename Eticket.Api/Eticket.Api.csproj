@@ -13,4 +13,9 @@
       <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
     </ProjectReference>
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Models" />
+    <Folder Include="Utils" />
+  </ItemGroup>
 </Project>
