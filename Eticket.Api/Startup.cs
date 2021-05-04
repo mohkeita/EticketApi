@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+using Eticket.Api.TokenJWT;
 using Eticket.Dal.Repositories;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -11,6 +14,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 namespace Eticket.Api
@@ -27,6 +31,8 @@ namespace Eticket.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddScoped(typeof(TokenManager));
+            
             services.AddTransient(typeof(UserAppRepository));
             services.AddTransient(typeof(TicketRepository));
             services.AddTransient(typeof(OrganizersRepository));
@@ -34,6 +40,27 @@ namespace Eticket.Api
             services.AddTransient(typeof(EventRepository));
             services.AddTransient(typeof(CategoryRepository));
             services.AddTransient(typeof(AddressRepository));
+            
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("admin", policy => policy.RequireRole("admin"));
+                options.AddPolicy("user", policy => policy.RequireRole("user","admin"));
+            });
+            
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(option =>
+                {
+                    option.TokenValidationParameters = new TokenValidationParameters()
+                    {
+                        ValidateIssuer = true,
+                        ValidIssuer = TokenManager.issuer,
+                        ValidateAudience = true,
+                        ValidAudience = TokenManager.audience,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(TokenManager.secret))
+                    };
+                });
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
@@ -56,6 +83,10 @@ namespace Eticket.Api
 
             app.UseRouting();
 
+            app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+
+            app.UseAuthentication();
+            
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

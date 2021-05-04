@@ -17,7 +17,7 @@ namespace Eticket.Dal.Repositories
         public RepositoryBase(string tableName, string idName)
         {
             Connection = new Connection(SqlClientFactory.Instance,
-                @"Data Source=SQL5104.site4now.net; Initial Catalog=db_a72c18_eticket;User Id=db_a72c18_eticket_admin; Password = aissata10");
+                "");
             TableName = tableName;
             IdName = idName;
         }
