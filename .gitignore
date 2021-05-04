@@ -1,5 +1,6 @@
 # globs
 Makefile.in
+RepositoryBase.cs
 *.userprefs
 *.usertasks
 config.make

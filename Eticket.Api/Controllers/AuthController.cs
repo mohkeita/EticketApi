@@ -15,11 +15,10 @@ namespace Eticket.Api.Controllers
         private TokenManager TokenManager { get; }
         private readonly ILogger<AuthController> _logger;
 
-        public AuthController(UserAppRepository userAppRepository, TokenManager tokenManager, ILogger<AuthController> logger)
+        public AuthController(UserAppRepository userAppRepository, TokenManager tokenManager)
         {
             UserAppRepository = userAppRepository;
             TokenManager = tokenManager;
-            _logger = logger;
         }
 
         [HttpPost]
@@ -27,10 +26,8 @@ namespace Eticket.Api.Controllers
         public IActionResult Register(UserRegister userRegister)
         {
             if (userRegister is null || !ModelState.IsValid)
-            {
-                _logger.LogInformation("BadRequest {0}",userRegister);
                 return BadRequest();
-            }
+            
                 
             
             
