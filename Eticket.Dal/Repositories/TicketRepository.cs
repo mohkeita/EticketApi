@@ -17,6 +17,7 @@ namespace Eticket.Dal.Repositories
                 Id = (int) reader["TicketId"],
                 Quantity = (int) reader["Quantity"],
                 UnitPrice = (decimal) reader["UnitPrice"],
+                Rest = (int) reader["Rest"]
             };
         }
 

@@ -13,7 +13,6 @@ namespace Eticket.Api.Controllers
     {
         private UserAppRepository UserAppRepository { get; }
         private TokenManager TokenManager { get; }
-        private readonly ILogger<AuthController> _logger;
 
         public AuthController(UserAppRepository userAppRepository, TokenManager tokenManager)
         {
@@ -28,8 +27,6 @@ namespace Eticket.Api.Controllers
             if (userRegister is null || !ModelState.IsValid)
                 return BadRequest();
             
-                
-            
             
             int id = UserAppRepository.Insert(new UserApp()
             {
@@ -41,7 +38,7 @@ namespace Eticket.Api.Controllers
                 Password = userRegister.Password
             });
 
-            return Ok();
+            return Ok(id);
         }
 
         [HttpPost]
